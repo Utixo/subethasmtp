@@ -5,19 +5,7 @@
 
 package org.subethamail.smtp.server;
 
-import org.subethamail.smtp.command.AuthCommand;
-import org.subethamail.smtp.command.DataCommand;
-import org.subethamail.smtp.command.EhloCommand;
-import org.subethamail.smtp.command.ExpandCommand;
-import org.subethamail.smtp.command.HelloCommand;
-import org.subethamail.smtp.command.HelpCommand;
-import org.subethamail.smtp.command.MailCommand;
-import org.subethamail.smtp.command.NoopCommand;
-import org.subethamail.smtp.command.QuitCommand;
-import org.subethamail.smtp.command.ReceiptCommand;
-import org.subethamail.smtp.command.ResetCommand;
-import org.subethamail.smtp.command.StartTLSCommand;
-import org.subethamail.smtp.command.VerifyCommand;
+import org.subethamail.smtp.command.*;
 
 /**
  * Enumerates all the Commands made available in this release.
@@ -38,7 +26,8 @@ public enum CommandRegistry
 	RSET(new ResetCommand(), true, false),
 	STARTTLS(new StartTLSCommand(), false, false),
 	VRFY(new VerifyCommand(), true, true),
-	EXPN(new ExpandCommand(), true, true);
+	EXPN(new ExpandCommand(), true, true),
+	XCLIENT(new XclientCommand(), true, true);
 
 	private Command command;
 
