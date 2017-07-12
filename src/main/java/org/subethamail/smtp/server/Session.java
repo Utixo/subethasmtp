@@ -3,11 +3,7 @@ package org.subethamail.smtp.server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
+import java.net.*;
 import java.security.cert.Certificate;
 import java.util.Map;
 
@@ -62,6 +58,19 @@ public class Session implements Runnable, MessageContext
 	private InputStream input;
 	private CRLFTerminatedReader reader;
 	private PrintWriter writer;
+
+	/** Client Address and Port*/
+	private String remoteClientName;
+	private String remoteClientIP;
+	private Integer remoteClientPort;
+
+	/** Client USer name and Password */
+	private String username;
+	private String password;
+
+	/** Remote SMTP Delivery */
+	private String destinationIP;
+	private Integer destinationPort;
 
 	/** Might exist if the client has successfully authenticated */
 	private AuthenticationHandler authenticationHandler;
@@ -580,5 +589,73 @@ public class Session implements Runnable, MessageContext
 	public Certificate[] getTlsPeerCertificates()
 	{
 		return tlsPeerCertificates;
+	}
+
+	public String getRemoteClientIP() {
+		if (remoteClientIP == null && socket != null) {
+			return this.getRemoteAddress().getAddress().getHostAddress();
+		}
+		return remoteClientIP;
+	}
+
+	public void setRemoteClientIP(String remoteClientIP) {
+		this.remoteClientIP = remoteClientIP;
+	}
+
+	public Integer getRemoteClientPort() {
+		if (remoteClientPort == null && socket != null) {
+			return this.getRemoteAddress().getPort();
+		}
+		return remoteClientPort;
+	}
+
+	public void setRemoteClientPort(Integer remoteClientPort) {
+		this.remoteClientPort = remoteClientPort;
+	}
+
+	public String getDestinationIP() {
+		return destinationIP;
+	}
+
+	public void setDestinationIP(String destinationIP) {
+		this.destinationIP = destinationIP;
+	}
+
+	public Integer getDestinationPort() {
+		return destinationPort;
+	}
+
+	public void setDestinationPort(Integer destinationPort) {
+		this.destinationPort = destinationPort;
+	}
+
+	public String getUsername() {
+		if (username == null && authenticationHandler != null && authenticationHandler.getIdentity() != null) {
+			return authenticationHandler.getIdentity().toString();
+		}
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getRemoteClientName() {
+		if (remoteClientName == null && socket != null) {
+			return getRemoteAddress().getHostName();
+		}
+		return remoteClientName;
+	}
+
+	public void setRemoteClientName(String remoteClientName) {
+		this.remoteClientName = remoteClientName;
 	}
 }
