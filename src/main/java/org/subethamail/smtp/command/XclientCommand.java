@@ -3,7 +3,6 @@ package org.subethamail.smtp.command;
 import org.subethamail.smtp.DropConnectionException;
 import org.subethamail.smtp.server.BaseCommand;
 import org.subethamail.smtp.server.Session;
-import org.subethamail.smtp.util.Base64;
 
 import java.io.IOException;
 import java.util.ArrayList;
