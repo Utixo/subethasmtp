@@ -1,5 +1,8 @@
 ## Changes ##
 
+### 3.1.8 - June 13, 2017 ###
+  * Extended SMTP commands to support XCLIENT.
+  
 ### 3.1.7 - June 12, 2012 ###
   * Complete Maven build (in addition to the original Ant based build)
   * SLF4J upgraded from the 1.5 series to 1.6
