@@ -11,7 +11,7 @@ public class InternetAddressUtils
 	/**
 	 * @return true if the string is a valid email address
 	 */
-	public static boolean isValidAddress(String address)
+	public static boolean isValidSingleAddress(String address)
 	{
 		if (address == null || address.length() == 0)
 			return true;
@@ -20,7 +20,7 @@ public class InternetAddressUtils
 		try
 		{
 			InternetAddress[] ia = InternetAddress.parse(address, true);
-			if (ia.length == 0)
+			if (ia.length != 1)
 				result = false;
 			else
 				result = true;

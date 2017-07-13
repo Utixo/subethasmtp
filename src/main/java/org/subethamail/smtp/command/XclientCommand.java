@@ -59,7 +59,7 @@ public class XclientCommand extends BaseCommand {
                 }
             } else if (parameterName.equals("ADDR")) {
                 if (!paramaterTypeUnavailable) {
-                    if (!InternetAddressUtils.isValidAddress(parameterValue)) {
+                    if (!InternetAddressUtils.isValidSingleAddress(parameterValue)) {
                         sess.sendResponse("501 address is not a valid internet address");
                         return;
                     }
@@ -106,7 +106,7 @@ public class XclientCommand extends BaseCommand {
                 sess.setPassword(password);
             } else if (parameterName.equals("DESTADDR")) {
                 if (!paramaterTypeUnavailable) {
-                    if (!InternetAddressUtils.isValidAddress(parameterValue)) {
+                    if (!InternetAddressUtils.isValidSingleAddress(parameterValue)) {
                         sess.sendResponse("501 address is not a valid internet address");
                         return;
                     }
