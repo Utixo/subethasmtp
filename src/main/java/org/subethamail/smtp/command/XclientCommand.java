@@ -3,6 +3,8 @@ package org.subethamail.smtp.command;
 import org.subethamail.smtp.DropConnectionException;
 import org.subethamail.smtp.server.BaseCommand;
 import org.subethamail.smtp.server.Session;
+import org.subethamail.smtp.util.Base64;
+import org.subethamail.smtp.util.InternetAddressUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,10 +26,10 @@ public class XclientCommand extends BaseCommand {
     @Override
     public void execute(String commandString, Session sess) throws IOException, DropConnectionException {
         if (sess.isMailTransactionInProgress()) {
-            sess.sendResponse("503 Mail transaction in progress.");
+            sess.sendResponse("503 Mail transaction in progress");
             return;
         } else if (commandString.trim().equals("XCLIENT")) {
-            sess.sendResponse("501 Missing parameters.");
+            sess.sendResponse("501 Missing parameters");
         }
 
         StringTokenizer tokens = new StringTokenizer(commandString);
@@ -38,13 +40,13 @@ public class XclientCommand extends BaseCommand {
             String parameter = tokens.nextToken();
             List<String> parameterValuePair = this.extractParameterNameValuePair(parameter, "=");
             if (parameterValuePair == null || parameterValuePair.size() != 2) {
-                sess.sendResponse("501 Parameter format error, must be PARAM=VALUE.");
+                sess.sendResponse("501 Parameter format error, must be PARAM=VALUE");
                 return;
             }
             String parameterName = parameterValuePair.get(0).toUpperCase(Locale.ENGLISH);
             String parameterValue = parameterValuePair.get(1);
             if (parameterValue.isEmpty()) {
-                sess.sendResponse("501 Parameter format error, must be PARAM=VALUE.");
+                sess.sendResponse("501 Parameter format error, must be PARAM=VALUE");
                 return;
             }
             boolean paramaterTypeUnavailable = isUnavailable(parameterValue);
@@ -56,14 +58,18 @@ public class XclientCommand extends BaseCommand {
                     sess.setRemoteClientName(null);
                 }
             } else if (parameterName.equals("ADDR")) {
-                if (!paramaterTypeUnavailable) { 
+                if (!paramaterTypeUnavailable) {
+                    if (!InternetAddressUtils.isValidAddress(parameterValue)) {
+                        sess.sendResponse("501 address is not a valid internet address");
+                        return;
+                    }
                     sess.setRemoteClientIP(parameterValue);
                 } else {
                     sess.setRemoteClientIP(null);
                 }
             } else if (parameterName.equals("PORT")) {
                 if (!paramaterTypeUnavailable) { 
-                    sess.setRemoteClientPort(Integer.parseInt(parameter, 10));
+                    sess.setRemoteClientPort(Integer.parseInt(parameterValue, 10));
                 } else {
                     sess.setRemoteClientPort(null);
                 }
@@ -87,17 +93,23 @@ public class XclientCommand extends BaseCommand {
                             password = userPasswordPair.get(1);
                             if (isUnavailable(password)) {
                                 password = null;
+                            } else {
+                                password = new String(Base64.decodeFast(password));
                             }
                         }
                     } else {
-                        sess.sendResponse("501 Parameter format error, must be LOGIN=<user alias>:<base 64 encoded password>.");
+                        sess.sendResponse("501 Parameter format error, must be LOGIN=<user alias>:<base 64 encoded password>");
                         return;
                     }
                 }
                 sess.setUsername(userName);
                 sess.setPassword(password);
             } else if (parameterName.equals("DESTADDR")) {
-                if (!paramaterTypeUnavailable) { 
+                if (!paramaterTypeUnavailable) {
+                    if (!InternetAddressUtils.isValidAddress(parameterValue)) {
+                        sess.sendResponse("501 address is not a valid internet address");
+                        return;
+                    }
                     sess.setDestinationIP(parameterValue);
                 } else {
                     sess.setDestinationIP(null);
@@ -109,7 +121,7 @@ public class XclientCommand extends BaseCommand {
                     sess.setDestinationPort(null);
                 }
             } else {
-                sess.sendResponse(String.format("501 Parameter %s not supported.", parameterName));
+                sess.sendResponse(String.format("501 Parameter %s not supported", parameterName));
                 return;
             }
         }
@@ -126,7 +138,7 @@ public class XclientCommand extends BaseCommand {
         if (delimiterPosition >= 0) {
             // Extract the first part on the left side
             if (delimiterPosition > 0) {
-                pairList.add(token.substring(0, delimiterPosition - 1).trim());
+                pairList.add(token.substring(0, delimiterPosition).trim());
             } else {
                 pairList.add("");
             }
