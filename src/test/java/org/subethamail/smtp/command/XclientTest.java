@@ -118,7 +118,7 @@ public class XclientTest extends ServerTestCase {
         this.send("XCLIENT DESTADDR=127.0.0.1");
         this.expect("220 ok");
 
-        this.send("XCLIENT destaddr=127.0.0.1");
+        this.send("XCLIENT destaddr=www.test.org");
         this.expect("220 ok");
     }
 
