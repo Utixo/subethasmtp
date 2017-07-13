@@ -94,7 +94,12 @@ public class XclientCommand extends BaseCommand {
                             if (isUnavailable(password)) {
                                 password = null;
                             } else {
-                                password = new String(Base64.decodeFast(password));
+                                byte[] decoded = Base64.decode(password);
+                                if (decoded == null) {
+                                    sess.sendResponse("501 Invalid command argument, not a valid Base64 string");
+                                    return;
+                                }
+                                password = new String(decoded);
                             }
                         }
                     } else {

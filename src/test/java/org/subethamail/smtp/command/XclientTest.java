@@ -189,6 +189,15 @@ public class XclientTest extends ServerTestCase {
     }
 
     /** */
+    public void testLOGINUserNameAndBadPasswordParameter() throws Exception
+    {
+        this.expect("220");
+
+        this.send(String.format("XCLIENT LOGIN=test@test.org:%s", "ThisIsATest"));
+        this.expect("501 Invalid command argument, not a valid Base64 string");
+    }
+
+    /** */
     public void testLOGINNoUserNameOrPasswordParameter() throws Exception
     {
         this.expect("220");
